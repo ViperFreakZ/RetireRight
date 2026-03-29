@@ -218,7 +218,7 @@ function runCalculation() {
 // ─────────────────────────────────────────
 // 5b. COMMUNITY INSIGHTS FETCH & RENDER
 // ─────────────────────────────────────────
-const BACKEND = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const BACKEND = import.meta.env.PROD ? '' : 'http://localhost:3000';
 
 async function fetchInsights({ age, monthly, rate, corpus }) {
   // Derive risk label from current allocation sliders if possible, else from rate
