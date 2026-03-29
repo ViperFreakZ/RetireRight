@@ -25,7 +25,10 @@ function isLoggedIn() { return !!getToken(); }
 // ── API Calls ────────────────────────────────────────────────────────────
 
 async function apiPost(path, body, auth = false) {
-  const headers = { 'Content-Type': 'application/json' };
+  const headers = { 
+    'Content-Type': 'application/json',
+    'Bypass-Tunnel-Reminder': 'true' // Allow API calls through Localtunnel for other users
+  };
   if (auth) headers['Authorization'] = `Bearer ${getToken()}`;
   const res = await fetch(`${API}${path}`, { method: 'POST', headers, body: JSON.stringify(body) });
   const data = await res.json();
@@ -34,7 +37,8 @@ async function apiPost(path, body, auth = false) {
 }
 
 async function apiGet(path) {
-  const res = await fetch(`${API}${path}`);
+  const headers = { 'Bypass-Tunnel-Reminder': 'true' };
+  const res = await fetch(`${API}${path}`, { headers });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || 'Request failed');
   return data;

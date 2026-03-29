@@ -237,7 +237,10 @@ async function fetchInsights({ age, monthly, rate, corpus }) {
   try {
     const res = await fetch(`${BACKEND}/api/insights`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Bypass-Tunnel-Reminder': 'true' 
+      },
       body: JSON.stringify({
         age,
         monthlySaving:    monthly,
