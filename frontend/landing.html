@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RetireRight — Welcome</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/src/styles.css" />
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #0a0514;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="intro-overlay" style="display: flex; opacity: 1; visibility: visible;">
+    <!-- Animated background -->
+    <canvas id="intro-canvas" class="intro-video"></canvas>
+    <div class="intro-overlay-bg"></div>
+
+    <!-- Content -->
+    <div class="intro-content">
+      <div class="intro-logo">🚀 RetireRight</div>
+      <h1 class="intro-title">Welcome to Your Financial Future</h1>
+      <p class="intro-subtitle">Gamified retirement planning for Gen Z. Visualize your future, build wealth habits, and
+        climb the leaderboard.</p>
+
+      <div class="intro-buttons">
+        <!-- Get Started passes action=login to trigger auth modal in main app -->
+        <a href="index.html?action=login" class="btn-primary intro-btn" style="text-decoration: none;">Get Started</a>
+        <button class="btn-ghost intro-btn" id="intro-app-btn" onclick="alert('App Link Coming Soon!')">📱 Get the
+          App</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Canvas animation logic ported from auth.js
+    const canvas = document.getElementById('intro-canvas');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      let w, h;
+      function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      const lines = Array.from({ length: 8 }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        points: [],
+        speed: 1 + Math.random() * 2,
+        color: Math.random() > 0.5 ? 'rgba(124, 58, 237, 0.4)' : 'rgba(6, 182, 212, 0.4)'
+      }));
+
+      const dots = Array.from({ length: 40 }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 3 + 1,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5
+      }));
+
+      let time = 0;
+      function animate() {
+        ctx.clearRect(0, 0, w, h);
+        time += 0.01;
+
+        ctx.fillStyle = 'rgba(255,255,255,0.15)';
+        dots.forEach(d => {
+          d.x += d.vx;
+          d.y += d.vy;
+          if (d.x < 0 || d.x > w) d.vx *= -1;
+          if (d.y < 0 || d.y > h) d.vy *= -1;
+          ctx.beginPath();
+          ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        lines.forEach(l => {
+          l.x += l.speed;
+          l.y -= l.speed * 0.5;
+
+          l.points.push({ x: l.x, y: l.y + Math.sin(time * l.speed + l.x * 0.01) * 30 });
+          if (l.points.length > 50) l.points.shift();
+
+          if (l.x > w + 100 || l.y < -100) {
+            l.x = -100;
+            l.y = h * 0.8 + Math.random() * h * 0.4;
+            l.points = [];
+          }
+
+          ctx.beginPath();
+          ctx.strokeStyle = l.color;
+          ctx.lineWidth = 2;
+          for (let i = 0; i < l.points.length; i++) {
+            const p = l.points[i];
+            if (i === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+          }
+          ctx.stroke();
+        });
+
+        requestAnimationFrame(animate);
+      }
+      animate();
+    }
+  </script>
+</body>
+
+</html>

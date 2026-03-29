@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RetireRight — Your Future Starts Now</title>
+  <meta name="description" content="RetireRight helps Gen Z start retirement planning early with gamification, AI future-self visualization, lifestyle simulation and real-time nudges." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <meta name="theme-color" content="#7c3aed" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="apple-touch-icon" href="/icon-512.png" />
+  
+  <style>
+    html.auth-pending body > header,
+    html.auth-pending body > main,
+    html.auth-pending body > footer {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+  </style>
+  <script>
+    // Synchronous auth check to prevent FOUC (Flash of Unwanted Content)
+    if (!localStorage.getItem('rr_token')) {
+      if (!window.location.search.includes('action=login')) {
+        window.location.replace('landing.html');
+      } else {
+        document.documentElement.classList.add('auth-pending');
+      }
+    }
+  </script>
+</head>
+<body>
+
+<!-- ░░░ PARTICLE BACKGROUND ░░░ -->
+<div id="particles-bg" aria-hidden="true"></div>
+
+<!-- ░░░ NAVBAR ░░░ -->
+<header class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <span class="logo-icon">🚀</span>
+      <span class="logo-text">RetireRight</span>
+    </a>
+    <nav class="nav-links" role="navigation" aria-label="Main navigation">
+      <a href="#calculator" class="nav-link">Calculator</a>
+      <a href="#future-self" class="nav-link">Future Self</a>
+      <a href="#lifestyle" class="nav-link">Lifestyle</a>
+      <a href="#invest" class="nav-link">Invest</a>
+      <a href="#insights" class="nav-link">Community</a>
+      <a href="#habits" class="nav-link">Habits</a>
+      <a href="#quiz" class="nav-link">Quiz</a>
+      <a href="#commitment" class="nav-link">Contracts</a>
+      <a href="#education" class="nav-link">Learn</a>
+      <a href="#leaderboard" class="nav-link">🏆 Board</a>
+    </nav>
+    <div class="nav-right">
+      <button class="nav-auth-btn" id="nav-auth-btn" title="Login / Sign Up">👤</button>
+      <span class="nav-username" id="nav-username" style="display:none;"></span>
+      <div class="nav-xp" id="nav-xp">
+        <span class="xp-star">⭐</span>
+        <span id="nav-xp-count">0 XP</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ░░░ HERO ░░░ -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🔥 Gen Z Retirement Revolution</div>
+    <h1 class="hero-title">
+      Your <span class="gradient-text">Future Self</span><br />
+      is Watching You.
+    </h1>
+    <p class="hero-subtitle">
+      Start saving ₹500/month today. Watch compound interest do the heavy lifting.
+      Retire early. Live legendary. 🏖️
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="stat-val" data-counter="10000000">₹0</span>
+        <span class="stat-label">Potential corpus at 60</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-val" data-counter="37">0</span>
+        <span class="stat-label">Years of growth at 22</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-val" data-counter="12">0%</span>
+        <span class="stat-label">Avg. equity return (30yr)</span>
+      </div>
+    </div>
+    <div class="hero-cta">
+      <a href="#calculator" class="btn-primary" id="hero-cta-btn">Calculate My Future 🎯</a>
+      <a href="#future-self" class="btn-ghost">See My Future Self →</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-card glass-card">
+      <div class="mini-chart-label">₹1,000/month → 30 years</div>
+      <canvas id="hero-mini-chart" width="280" height="140" aria-label="Mini growth chart"></canvas>
+      <div class="mini-chart-result">= <strong>₹3.5 Crore</strong> 🤯</div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░░ NUDGE BANNER ░░░ -->
+<div class="nudge-banner" id="nudge-banner" role="alert" aria-live="polite">
+  <span class="nudge-icon">💡</span>
+  <span id="nudge-text">Skipping one ₹200 delivery order = ₹2.4 Lakh in 20 years. Think about it.</span>
+  <button class="nudge-close" id="nudge-close" aria-label="Dismiss nudge">✕</button>
+</div>
+
+<!-- ░░░ CALCULATOR ░░░ -->
+<section class="section" id="calculator">
+  <div class="section-inner">
+
+    <h2 class="section-title">Retirement <span class="gradient-text">Calculator</span></h2>
+    <p class="section-sub">See exactly what your money becomes. No jargon, just numbers.</p>
+
+    <div class="calc-layout">
+      <div class="calc-inputs glass-card">
+        <div class="input-group">
+          <label for="current-age">Your Current Age</label>
+          <div class="slider-row">
+            <input type="range" id="current-age" min="18" max="40" value="22" class="slider" aria-label="Current age slider" />
+            <span class="slider-val" id="current-age-val">22</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="retire-age">Target Retirement Age</label>
+          <div class="slider-row">
+            <input type="range" id="retire-age" min="40" max="65" value="55" class="slider" aria-label="Retirement age slider" />
+            <span class="slider-val" id="retire-age-val">55</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="monthly-saving">Monthly Savings (₹)</label>
+          <div class="slider-row">
+            <input type="range" id="monthly-saving" min="500" max="50000" step="500" value="5000" class="slider" aria-label="Monthly saving slider" />
+            <span class="slider-val" id="monthly-saving-val">₹5,000</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="annual-return">Expected Annual Return (%)</label>
+          <div class="slider-row">
+            <input type="range" id="annual-return" min="5" max="20" step="0.5" value="12" class="slider" aria-label="Annual return slider" />
+            <span class="slider-val" id="annual-return-val">12%</span>
+          </div>
+        </div>
+        <button class="btn-primary full-width" id="calc-btn">🔢 Calculate My Future</button>
+      </div>
+
+      <div class="calc-results">
+        <div class="result-card glass-card" id="result-corpus">
+          <div class="result-icon">🏆</div>
+          <div class="result-label">Your Retirement Corpus</div>
+          <div class="result-value" id="corpus-val">₹0</div>
+        </div>
+        <div class="result-card glass-card" id="result-invested">
+          <div class="result-icon">💸</div>
+          <div class="result-label">Total Invested</div>
+          <div class="result-value" id="invested-val">₹0</div>
+        </div>
+        <div class="result-card glass-card highlight-card" id="result-growth">
+          <div class="result-icon">📈</div>
+          <div class="result-label">Pure Interest Earned</div>
+          <div class="result-value" id="growth-val">₹0</div>
+        </div>
+        <div class="result-card glass-card wait-card" id="result-wait">
+          <div class="result-icon">⏳</div>
+          <div class="result-label">Cost of Waiting 5 Years</div>
+          <div class="result-value" id="wait-val">₹0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compound Interest Chart -->
+    <div class="chart-container glass-card" style="margin-top:2rem">
+      <div class="chart-header">
+        <h3>Start Now vs. Wait 5 Years</h3>
+        <div class="chart-legend">
+          <span class="legend-dot now"></span> Start Now
+          <span class="legend-dot later"></span> Wait 5 Years
+        </div>
+      </div>
+      <canvas id="compound-chart" height="300" aria-label="Compound interest comparison chart"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ░░░ COMMUNITY INSIGHTS ░░░ -->
+<section class="section" id="insights" style="display:none;">
+  <div class="section-inner">
+    <div class="section-tag">👥 Community Data</div>
+    <h2 class="section-title">How You <span class="gradient-text">Compare</span></h2>
+    <p class="section-sub" id="insights-sample-msg">Based on anonymised data from fellow RetireRight users.</p>
+
+    <!-- Stats chips -->
+    <div class="insights-stats-grid" id="insights-stats-grid">
+      <div class="glass-card insight-chip">
+        <div class="insight-chip-label">Avg. Monthly SIP</div>
+        <div class="insight-chip-value" id="ic-avg-saving">—</div>
+      </div>
+      <div class="glass-card insight-chip">
+        <div class="insight-chip-label">Avg. Annual Return</div>
+        <div class="insight-chip-value" id="ic-avg-return">—</div>
+      </div>
+      <div class="glass-card insight-chip">
+        <div class="insight-chip-label">Most Popular Risk</div>
+        <div class="insight-chip-value" id="ic-popular-risk">—</div>
+      </div>
+      <div class="glass-card insight-chip">
+        <div class="insight-chip-label">Avg. Starting Age</div>
+        <div class="insight-chip-value" id="ic-avg-age">—</div>
+      </div>
+    </div>
+
+    <!-- Personalised suggestions -->
+    <h3 class="habits-subtitle" style="margin-top:2rem;">💡 Personalised Suggestions</h3>
+    <div class="suggestions-list" id="suggestions-list">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</section>
+
+
+<section class="section alt-section" id="future-self">
+  <div class="section-inner">
+
+    <h2 class="section-title">Meet Your <span class="gradient-text">Future Self</span></h2>
+    <p class="section-sub">Choose your path. See who you become. The difference is what you do today.</p>
+
+    <div class="future-self-layout">
+      <div class="path-card glass-card path-good" id="path-saver">
+        <div class="path-badge">✅ Smart Saver</div>
+        <div class="future-avatar" id="avatar-good">
+          <div class="avatar-face">😎</div>
+          <div class="avatar-age-badge">You at <span id="future-age-good">55</span></div>
+        </div>
+        <div class="avatar-details">
+          <h3>The Early Retiree</h3>
+          <ul class="avatar-perks" id="perks-saver">
+            <li>🎯 Run the calculator above to see your future ↑</li>
+          </ul>
+          <div class="corpus-badge">Corpus: <strong id="corpus-good">—</strong></div>
+        </div>
+      </div>
+
+      <div class="vs-divider">
+        <div class="vs-circle">VS</div>
+        <div class="vs-line"></div>
+      </div>
+
+      <div class="path-card glass-card path-bad" id="path-spender">
+        <div class="path-badge danger-badge">❌ Impulse Spender</div>
+        <div class="future-avatar">
+          <div class="avatar-face">😰</div>
+          <div class="avatar-age-badge">You at <span id="future-age-bad">55</span></div>
+        </div>
+        <div class="avatar-details">
+          <h3>The Late Regret</h3>
+          <ul class="avatar-perks danger-perks">
+            <li>👔 Still working past retirement</li>
+            <li>💳 ₹0 saved, dependent on debt</li>
+            <li>🏥 Basic health coverage only</li>
+            <li>😰 Dependent on children</li>
+            <li>📉 Run calculator to see what you'd miss</li>
+          </ul>
+          <div class="corpus-badge danger-corpus">Corpus: <strong>₹0</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="future-self-cta">
+      <div class="path-choice glass-card">
+        <p><strong>Which path are you on right now?</strong></p>
+        <div class="choice-btns">
+          <button class="btn-primary" id="choose-saver">I'm choosing Smart Saver 💪</button>
+          <button class="btn-ghost" id="choose-spender" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'}); setTimeout(()=>window._quizStart && window._quizStart(), 600);">I need help starting → Take the Quiz 🧠</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░░ LIFESTYLE SIMULATOR ░░░ -->
+<section class="section" id="lifestyle">
+  <div class="section-inner">
+
+    <h2 class="section-title">What Can Your <span class="gradient-text">Corpus Buy?</span></h2>
+    <p class="section-sub">Translate abstract numbers into real life. Here's what your retirement fund unlocks:</p>
+
+    <div class="lifestyle-grid" id="lifestyle-grid">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="lifestyle-input glass-card" style="margin-top:2rem; text-align:center;">
+      <p>Your current corpus goal: <strong id="lifestyle-corpus-display">₹0</strong></p>
+      <p class="lifestyle-hint">↑ Run the calculator above, then see what your corpus can buy! 🎯</p>
+    </div>
+  </div>
+</section>
+
+<!-- ░░░ INVESTMENT ALLOCATION ░░░ -->
+<section class="section alt-section" id="invest">
+  <div class="section-inner">
+
+    <h2 class="section-title">Build Your <span class="gradient-text">Portfolio</span></h2>
+    <p class="section-sub">Drag the sliders to design your investment mix. See the risk-reward in real time.</p>
+
+    <div class="alloc-layout">
+      <div class="alloc-sliders glass-card">
+        <div class="alloc-item" data-asset="equity">
+          <div class="alloc-header">
+            <span class="alloc-icon">📈</span>
+            <span class="alloc-name">Equity / Stocks</span>
+            <span class="alloc-pct" id="equity-pct">60%</span>
+          </div>
+          <input type="range" id="equity-slider" min="0" max="100" value="60" class="slider alloc-slider" data-color="#7c3aed" aria-label="Equity allocation" />
+          <p class="alloc-desc">High risk, high reward. Best for long-term wealth.</p>
+        </div>
+        <div class="alloc-item" data-asset="debt">
+          <div class="alloc-header">
+            <span class="alloc-icon">🏦</span>
+            <span class="alloc-name">Debt / Bonds</span>
+            <span class="alloc-pct" id="debt-pct">25%</span>
+          </div>
+          <input type="range" id="debt-slider" min="0" max="100" value="25" class="slider alloc-slider" data-color="#06b6d4" aria-label="Debt allocation" />
+          <p class="alloc-desc">Stable returns. Cushion during market downturns.</p>
+        </div>
+        <div class="alloc-item" data-asset="crypto">
+          <div class="alloc-header">
+            <span class="alloc-icon">₿</span>
+            <span class="alloc-name">Crypto</span>
+            <span class="alloc-pct" id="crypto-pct">10%</span>
+          </div>
+          <input type="range" id="crypto-slider" min="0" max="30" value="10" class="slider alloc-slider" data-color="#f59e0b" aria-label="Crypto allocation" />
+          <p class="alloc-desc">High volatility. Small speculative allocation only.</p>
+        </div>
+        <div class="alloc-item" data-asset="cash">
+          <div class="alloc-header">
+            <span class="alloc-icon">💵</span>
+            <span class="alloc-name">Cash / Emergency</span>
+            <span class="alloc-pct" id="cash-pct">5%</span>
+          </div>
+          <input type="range" id="cash-slider" min="0" max="30" value="5" class="slider alloc-slider" data-color="#10b981" aria-label="Cash allocation" />
+          <p class="alloc-desc">Liquidity buffer. 3-6 months of expenses.</p>
+        </div>
+        <div class="alloc-total" id="alloc-total">
+          Total: <strong id="alloc-total-pct">100%</strong>
+        </div>
+      </div>
+
+      <div class="alloc-chart-wrap">
+        <canvas id="alloc-donut" width="280" height="280" aria-label="Portfolio allocation donut chart"></canvas>
+        <div class="alloc-risk-meter">
+          <div class="risk-label">Risk Level</div>
+          <div class="risk-bar">
+            <div class="risk-fill" id="risk-fill"></div>
+          </div>
+          <div class="risk-text" id="risk-text">Moderate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░░ DAILY HABITS / GAMIFICATION ░░░ -->
+<section class="section" id="habits">
+  <div class="section-inner">
+
+    <h2 class="section-title">Build <span class="gradient-text">Daily Habits</span></h2>
+    <p class="section-sub">Every small action earns XP. Level up your financial life.</p>
+
+    <!-- XP & Level Bar -->
+    <div class="gamification-header glass-card">
+      <div class="gam-level">
+        <div class="level-icon">🏅</div>
+        <div class="level-info">
+          <div class="level-label">Level <span id="level-num">1</span></div>
+          <div class="level-name" id="level-name">Savings Seedling</div>
+        </div>
+        <div class="xp-pill">⭐ <span id="xp-total">0</span> XP</div>
+      </div>
+      <div class="xp-bar-wrap">
+        <div class="xp-bar">
+          <div class="xp-fill" id="xp-fill" style="width:0%"></div>
+        </div>
+        <span class="xp-next">Next level: <span id="xp-needed">100</span> XP</span>
+      </div>
+      <div class="streak-wrap">
+        <div class="streak-icon">🔥</div>
+        <div class="streak-info">
+          <div class="streak-num" id="streak-count">0</div>
+          <div class="streak-label">Day Streak</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Habit Checklist -->
+    <div class="habits-grid">
+      <h3 class="habits-subtitle">Today's Habits</h3>
+      <div class="habit-cards" id="habit-cards">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- Badges -->
+    <div class="badges-section">
+      <h3 class="habits-subtitle">Your Badges</h3>
+      <div class="badges-grid" id="badges-grid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░░ SAVING CHARACTER QUIZ ░░░ -->
+<section class="section alt-section" id="quiz">
+  <div class="section-inner">
+
+    <h2 class="section-title">Discover Your <span class="gradient-text">Saving Character</span></h2>
+    <p class="section-sub">7 quick questions. Discover your financial personality. Get a plan tailored to you.</p>
+
+    <div id="quiz-content">
+      <!-- Populated by quiz.js -->
+    </div>
+  </div>
+</section>
+
+<!-- ░░░ COMMITMENT CONTRACTS ░░░ -->
+<section class="section" id="commitment">
+  <div class="section-inner">
+
+    <h2 class="section-title">Commitment <span class="gradient-text">Contracts</span></h2>
+    <p class="section-sub">Pledge to save. Put your XP on the line. Your future self will thank you.</p>
+
+    <div class="contract-layout">
+      <div class="contract-form-wrap glass-card">
+        <h3>Create a New Contract</h3>
+        <form id="contract-form" class="contract-form">
+          <div class="input-group">
+            <label for="contract-amount">Monthly Savings Pledge (₹)</label>
+            <input type="number" id="contract-amount" min="100" step="100" placeholder="e.g. 5000" class="contract-input" required />
+          </div>
+          <div class="input-group">
+            <label for="contract-duration">Duration</label>
+            <select id="contract-duration" class="contract-input">
+              <option value="1">1 Month</option>
+              <option value="3" selected>3 Months</option>
+              <option value="6">6 Months</option>
+              <option value="12">1 Year</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="contract-penalty">Penalty if Broken</label>
+            <select id="contract-penalty" class="contract-input">
+              <option value="xp">Lose 100 XP</option>
+              <option value="streak">Reset streak to 0</option>
+              <option value="badge">Lock a badge for 24h</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary full-width">🤝 Create Contract +25 XP</button>
+        </form>
+      </div>
+
+      <div class="contract-list-wrap">
+        <h3>Your Contracts</h3>
+        <div id="contracts-empty" class="contracts-empty glass-card">
+          <div class="empty-icon">📜</div>
+          <p>No contracts yet. Create one to hold yourself accountable!</p>
+        </div>
+        <div id="contracts-list" class="contracts-list"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░░ EDUCATION HUB ░░░ -->
+<section class="section" id="education">
+  <div class="section-inner">
+
+    <h2 class="section-title">Gen Z <span class="gradient-text">Finance 101</span></h2>
+    <p class="section-sub">Bite-sized knowledge. No boring textbooks. Just what you need to know.</p>
+
+    <div class="tips-carousel" id="tips-carousel">
+      <div class="tips-track" id="tips-track">
+        <!-- Populated by JS -->
+      </div>
+      <div class="tips-nav">
+        <button class="tips-arrow" id="tip-prev" aria-label="Previous tip">←</button>
+        <div class="tips-dots" id="tips-dots"></div>
+        <button class="tips-arrow" id="tip-next" aria-label="Next tip">→</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░░ ACTION PLAN ░░░ -->
+<section class="section" id="action">
+  <div class="section-inner" style="text-align:center;">
+    <div class="section-tag">🎯 Your Plan</div>
+    <h2 class="section-title">Start <span class="gradient-text">Today</span></h2>
+    <p class="section-sub">Three moves. That's all it takes to begin.</p>
+
+    <div class="action-steps">
+      <div class="action-step glass-card">
+        <div class="step-num">01</div>
+        <div class="step-icon">📱</div>
+        <h3>Open a Mutual Fund Account</h3>
+        <p>Use Groww, Zerodha, or Paytm Money. Takes 10 minutes. Start with ₹500 SIP.</p>
+        <button class="btn-primary" id="action-btn-1" onclick="earnXP(50, 'Opened fund account!')">Mark Done ✓ +50 XP</button>
+      </div>
+      <div class="action-step glass-card">
+        <div class="step-num">02</div>
+        <div class="step-icon">🤖</div>
+        <h3>Automate Your SIP</h3>
+        <p>Set up auto-debit on salary day. No willpower needed. The app does it for you.</p>
+        <button class="btn-primary" id="action-btn-2" onclick="earnXP(75, 'SIP automated!')">Mark Done ✓ +75 XP</button>
+      </div>
+      <div class="action-step glass-card">
+        <div class="step-num">03</div>
+        <div class="step-icon">📈</div>
+        <h3>Increase SIP by 10% Yearly</h3>
+        <p>Every year, simply push your SIP up by 10%. This alone can 3x your corpus.</p>
+        <button class="btn-primary" id="action-btn-3" onclick="earnXP(100, 'Step-up SIP activated!')">Mark Done ✓ +100 XP</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░░ LEADERBOARD ░░░ -->
+<section class="section alt-section" id="leaderboard">
+  <div class="section-inner">
+    <div class="section-tag">🏆 Rankings</div>
+    <h2 class="section-title">Community <span class="gradient-text">Leaderboard</span></h2>
+    <p class="section-sub">See how you stack up against fellow RetireRight warriors.</p>
+    <div class="lb-controls">
+      <button class="btn-ghost" id="lb-refresh-btn">🔄 Refresh</button>
+    </div>
+    <div class="lb-table-wrap glass-card">
+      <table class="lb-table" id="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>XP</th>
+            <th>Level</th>
+            <th>Badges</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-body">
+          <tr><td colspan="5" class="lb-empty">Sign up to see the leaderboard!</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ░░░ AUTH MODAL ░░░ -->
+<div class="modal-overlay" id="auth-modal" style="display:none;">
+  <div class="modal-content glass-card auth-modal-box">
+    <button class="modal-close" id="auth-modal-close">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login">Login</button>
+      <button class="auth-tab" data-tab="signup">Sign Up</button>
+    </div>
+    <div class="auth-error" id="auth-error"></div>
+    <form class="auth-form" id="auth-login-form">
+      <div class="auth-input-group">
+        <label for="login-username">Username</label>
+        <input type="text" id="login-username" placeholder="your_username" required autocomplete="username" />
+      </div>
+      <div class="auth-input-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password" />
+      </div>
+      <button type="submit" class="btn-primary full-width">🔑 Login</button>
+    </form>
+    <form class="auth-form" id="auth-signup-form" style="display:none;">
+      <div class="auth-input-group">
+        <label for="signup-username">Choose a Username</label>
+        <input type="text" id="signup-username" placeholder="coolsaver_99" minlength="3" maxlength="20" required autocomplete="username" />
+      </div>
+      <div class="auth-input-group">
+        <label for="signup-password">Create Password</label>
+        <input type="password" id="signup-password" placeholder="min 4 characters" minlength="4" required autocomplete="new-password" />
+      </div>
+      <button type="submit" class="btn-primary full-width">🚀 Create Account</button>
+    </form>
+    <button class="btn-ghost full-width auth-skip" id="auth-skip-btn" style="margin-top:1rem; display:none;">Skip for now →</button>
+  </div>
+</div>
+
+<!-- ░░░ PROFILE DASHBOARD MODAL ░░░ -->
+<div class="modal-overlay" id="profile-modal" style="display:none;">
+  <div class="modal-content glass-card profile-modal-box">
+    <button class="modal-close" id="profile-modal-close">✕</button>
+    <div class="profile-header">
+      <div class="profile-avatar">🧑‍💼</div>
+      <h2 id="profile-username">User</h2>
+      <div class="profile-level-badge" id="profile-level-num">Level 1</div>
+    </div>
+    <div class="profile-xp-section">
+      <div class="profile-level-name" id="profile-level-name">Savings Seedling</div>
+      <div class="profile-xp-bar">
+        <div class="profile-xp-fill" id="profile-xp-fill" style="width:0%"></div>
+      </div>
+      <div class="profile-xp-range" id="profile-xp-range">0 / 100 XP</div>
+    </div>
+    <div class="profile-stats-row">
+      <div class="profile-stat">
+        <div class="profile-stat-val" id="profile-xp">0</div>
+        <div class="profile-stat-label">Total XP</div>
+      </div>
+      <div class="profile-stat">
+        <div class="profile-stat-val" id="profile-streak">0</div>
+        <div class="profile-stat-label">Day Streak 🔥</div>
+      </div>
+      <div class="profile-stat">
+        <div class="profile-stat-val" id="profile-calcs">0</div>
+        <div class="profile-stat-label">Calculations</div>
+      </div>
+      <div class="profile-stat">
+        <div class="profile-stat-val" id="profile-habits">0</div>
+        <div class="profile-stat-label">Habits Done</div>
+      </div>
+    </div>
+    <h3 class="profile-section-title">🏅 Badges & Achievements</h3>
+    <div class="profile-badges-grid" id="profile-badges-grid"></div>
+    <button class="btn-ghost full-width" id="profile-logout-btn" style="margin-top:1.5rem;">🚪 Logout</button>
+  </div>
+</div>
+
+<!-- ░░░ TOAST NOTIFICATION ░░░ -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ░░░ FOOTER ░░░ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="logo-icon">🚀</span>
+      <span class="logo-text">RetireRight</span>
+    </div>
+    <p class="footer-tagline">Empowering Gen Z to retire early, live fully. 🌏</p>
+    <p class="footer-disclaimer">For educational purposes only. Consult a SEBI-registered advisor for personalised advice.</p>
+  </div>
+</footer>
+
+<script type="module" src="/src/app.js"></script>
+</body>
+</html>

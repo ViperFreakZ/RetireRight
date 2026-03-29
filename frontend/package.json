@@ -1,0 +1,19 @@
+{
+  "name": "futureloop-rpg-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FutureLoop RPG — Social & Gamified Retirement Planning (Frontend)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.0"
+  },
+  "devDependencies": {
+    "vite": "^6.2.0",
+    "vite-plugin-pwa": "^1.2.0"
+  }
+}

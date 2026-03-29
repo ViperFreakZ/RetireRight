@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RetireRight — Idea, Novelties & Implementation Plan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── PRINT / PDF SETUP ── */
+    @page {
+      size: A4;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #fff !important; color: #111 !important; }
+      .page-break { page-break-before: always; }
+      .card { box-shadow: none !important; border: 1px solid #e2e8f0 !important; }
+      .cover { background: linear-gradient(135deg,#1e0a4a 0%,#0a2140 100%) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .cover * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .pill        { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .section-num { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .novelty-card{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .step-num    { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .tag         { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    /* ── VARIABLES ── */
+    :root {
+      --purple:  #7c3aed;
+      --cyan:    #0891b2;
+      --green:   #059669;
+      --amber:   #d97706;
+      --red:     #dc2626;
+      --ink:     #0f172a;
+      --ink2:    #334155;
+      --ink3:    #64748b;
+      --surface: #f8fafc;
+      --border:  #e2e8f0;
+    }
+
+    /* ── BASE ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      background: #f1f5f9;
+      font-size: 10.5pt;
+      line-height: 1.65;
+    }
+    h1,h2,h3,h4,h5 { font-family: 'Outfit', sans-serif; }
+    a { color: var(--purple); text-decoration: none; }
+
+    /* ── PRINT BUTTON ── */
+    .print-fab {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      background: linear-gradient(135deg,#7c3aed,#0891b2);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 0.75rem 1.5rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(124,58,237,0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: transform .2s, box-shadow .2s;
+      z-index: 99;
+    }
+    .print-fab:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(124,58,237,0.5);
+    }
+
+    /* ── PAGE WRAPPER ── */
+    .doc {
+      max-width: 820px;
+      margin: 2rem auto 4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      background: #fff;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.12);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    /* ══════════════════════════════
+       COVER PAGE
+    ══════════════════════════════ */
+    .cover {
+      background: linear-gradient(135deg,#1e0a4a 0%,#0a2140 100%);
+      color: #fff;
+      padding: 56px 52px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cover::before {
+      content:'';
+      position:absolute;
+      top:-80px; right:-80px;
+      width:340px; height:340px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(124,58,237,0.35) 0%,transparent 70%);
+    }
+    .cover::after {
+      content:'';
+      position:absolute;
+      bottom:-60px; left:-60px;
+      width:260px; height:260px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(8,145,178,0.25) 0%,transparent 70%);
+    }
+    .cover-top {
+      display:flex;
+      align-items:center;
+      gap:0.75rem;
+      margin-bottom:3rem;
+    }
+    .cover-logo {
+      font-family:'Outfit',sans-serif;
+      font-size:1.4rem;
+      font-weight:900;
+      background:linear-gradient(90deg,#a78bfa,#67e8f9);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .cover-domain {
+      font-size:0.75rem;
+      background:rgba(124,58,237,0.25);
+      border:1px solid rgba(124,58,237,0.5);
+      color:#c4b5fd;
+      padding:0.2rem 0.7rem;
+      border-radius:999px;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      font-weight:600;
+    }
+    .cover-problem {
+      font-size:0.8rem;
+      color:#94a3b8;
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+      font-weight:600;
+      margin-bottom:1rem;
+    }
+    .cover h1 {
+      font-size:2.6rem;
+      font-weight:900;
+      line-height:1.1;
+      margin-bottom:1.25rem;
+      background:linear-gradient(90deg,#fff 0%,#c4b5fd 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .cover-sub {
+      font-size:1rem;
+      color:#94a3b8;
+      max-width:520px;
+      margin-bottom:2.5rem;
+      line-height:1.7;
+    }
+    .cover-meta {
+      display:flex;
+      gap:2rem;
+      flex-wrap:wrap;
+      padding-top:2rem;
+      border-top:1px solid rgba(255,255,255,0.1);
+    }
+    .meta-item { display:flex; flex-direction:column; gap:2px; }
+    .meta-label { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:#64748b; }
+    .meta-val   { font-size:0.9rem; color:#e2e8f0; font-weight:600; font-family:'Outfit',sans-serif; }
+
+    /* ══════════════════════════════
+       INNER SECTIONS
+    ══════════════════════════════ */
+    .inner { padding: 44px 52px; }
+    .inner + .inner { border-top: 2px solid var(--border); }
+
+    .section-num {
+      display:inline-block;
+      font-family:'Outfit',sans-serif;
+      font-size:0.7rem;
+      font-weight:800;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      background:linear-gradient(135deg,#7c3aed,#0891b2);
+      color:#fff;
+      padding:0.25rem 0.8rem;
+      border-radius:999px;
+      margin-bottom:0.85rem;
+    }
+
+    .section-title {
+      font-size:1.55rem;
+      font-weight:800;
+      margin-bottom:0.5rem;
+      color:var(--ink);
+    }
+
+    .section-lead {
+      color:var(--ink3);
+      font-size:0.95rem;
+      margin-bottom:1.75rem;
+      max-width:630px;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:1.25rem 1.4rem;
+      margin-bottom:1rem;
+    }
+    .card:last-child { margin-bottom:0; }
+
+    /* ── Pill tags ── */
+    .pill {
+      display:inline-block;
+      font-size:0.68rem;
+      font-weight:700;
+      letter-spacing:0.06em;
+      text-transform:uppercase;
+      padding:0.18rem 0.65rem;
+      border-radius:999px;
+      margin-bottom:0.5rem;
+    }
+    .pill-purple { background:#ede9fe; color:#6d28d9; }
+    .pill-cyan   { background:#cffafe; color:#0e7490; }
+    .pill-green  { background:#d1fae5; color:#065f46; }
+    .pill-amber  { background:#fef3c7; color:#92400e; }
+    .pill-red    { background:#fee2e2; color:#991b1b; }
+    .pill-slate  { background:#f1f5f9; color:#475569; }
+
+    /* ── Two-column grid ── */
+    .grid-2 {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:1rem;
+      margin-bottom:1.25rem;
+    }
+    .grid-3 {
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:1rem;
+      margin-bottom:1.25rem;
+    }
+
+    /* ── Novelty cards ── */
+    .novelty-card {
+      border-radius:12px;
+      padding:1.25rem 1.4rem;
+      border-left:4px solid transparent;
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-left-width:4px;
+      page-break-inside:avoid;
+    }
+    .novelty-card .n-number {
+      font-family:'Outfit',sans-serif;
+      font-size:2rem;
+      font-weight:900;
+      opacity:0.12;
+      line-height:1;
+      float:right;
+    }
+    .novelty-card h4 {
+      font-size:1rem;
+      font-weight:700;
+      margin-bottom:0.4rem;
+      color:var(--ink);
+    }
+    .novelty-card p {
+      font-size:0.875rem;
+      color:var(--ink2);
+      line-height:1.65;
+    }
+    .novelty-card .impact {
+      margin-top:0.75rem;
+      font-size:0.78rem;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      gap:0.4rem;
+    }
+    .nc-purple { border-left-color:#7c3aed; }
+    .nc-cyan   { border-left-color:#0891b2; }
+    .nc-green  { border-left-color:#059669; }
+    .nc-amber  { border-left-color:#d97706; }
+    .nc-red    { border-left-color:#dc2626; }
+    .nc-pink   { border-left-color:#db2777; }
+
+    /* ── Implementation steps ── */
+    .impl-step {
+      display:flex;
+      gap:1.25rem;
+      align-items:flex-start;
+      padding:1.1rem 1.25rem;
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:12px;
+      margin-bottom:0.85rem;
+      page-break-inside:avoid;
+    }
+    .step-num {
+      width:40px; height:40px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#7c3aed,#0891b2);
+      color:#fff;
+      font-family:'Outfit',sans-serif;
+      font-weight:800;
+      font-size:1rem;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+    .step-body h4 {
+      font-size:0.97rem;
+      font-weight:700;
+      margin-bottom:0.25rem;
+      color:var(--ink);
+    }
+    .step-body p {
+      font-size:0.855rem;
+      color:var(--ink2);
+      line-height:1.6;
+    }
+    .step-tags {
+      display:flex;
+      gap:0.4rem;
+      flex-wrap:wrap;
+      margin-top:0.5rem;
+    }
+    .tag {
+      font-size:0.65rem;
+      font-weight:700;
+      letter-spacing:0.05em;
+      text-transform:uppercase;
+      padding:0.15rem 0.55rem;
+      border-radius:999px;
+      background:#ede9fe;
+      color:#5b21b6;
+    }
+
+    /* ── Comparison table ── */
+    table {
+      width:100%;
+      border-collapse:collapse;
+      font-size:0.875rem;
+      margin:1rem 0 1.5rem;
+    }
+    th {
+      background:linear-gradient(135deg,#7c3aed,#0891b2);
+      color:#fff;
+      font-family:'Outfit',sans-serif;
+      font-weight:700;
+      padding:0.65rem 1rem;
+      text-align:left;
+      -webkit-print-color-adjust:exact;
+      print-color-adjust:exact;
+    }
+    th:first-child { border-radius:8px 0 0 0; }
+    th:last-child  { border-radius:0 8px 0 0; }
+    td {
+      padding:0.6rem 1rem;
+      border-bottom:1px solid var(--border);
+      color:var(--ink2);
+    }
+    tr:last-child td { border-bottom:none; }
+    tr:nth-child(even) td { background:#f8fafc; }
+
+    /* ── Problem stats ── */
+    .stat-boxes {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:1rem;
+      margin-bottom:1.5rem;
+    }
+    .stat-box {
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:1.1rem 1.2rem;
+      text-align:center;
+    }
+    .stat-box .sv {
+      font-family:'Outfit',sans-serif;
+      font-size:1.8rem;
+      font-weight:900;
+      background:linear-gradient(135deg,#7c3aed,#0891b2);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      display:block;
+      -webkit-print-color-adjust:exact;
+      print-color-adjust:exact;
+    }
+    .stat-box .sl {
+      font-size:0.78rem;
+      color:var(--ink3);
+      line-height:1.4;
+      display:block;
+      margin-top:0.2rem;
+    }
+
+    /* ── Timeline ── */
+    .timeline { position:relative; padding-left:2rem; }
+    .timeline::before {
+      content:'';
+      position:absolute;
+      left:0.6rem; top:0; bottom:0;
+      width:2px;
+      background:linear-gradient(180deg,#7c3aed,#0891b2);
+      -webkit-print-color-adjust:exact;
+      print-color-adjust:exact;
+    }
+    .tl-item {
+      position:relative;
+      margin-bottom:1.1rem;
+      padding:0.9rem 1.1rem;
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:10px;
+      page-break-inside:avoid;
+    }
+    .tl-item::before {
+      content:'';
+      position:absolute;
+      left:-1.6rem; top:1.1rem;
+      width:12px; height:12px;
+      border-radius:50%;
+      background:#7c3aed;
+      border:2px solid #fff;
+      box-shadow:0 0 0 2px #7c3aed;
+      -webkit-print-color-adjust:exact;
+      print-color-adjust:exact;
+    }
+    .tl-phase {
+      font-size:0.7rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+      color:#7c3aed;
+      margin-bottom:0.25rem;
+    }
+    .tl-item h4 { font-size:0.95rem; font-weight:700; margin-bottom:0.2rem; }
+    .tl-item p  { font-size:0.84rem; color:var(--ink2); }
+
+    /* ── Risk table ── */
+    .risk-row td:last-child { font-weight:600; }
+    .risk-low  { color:#059669; }
+    .risk-med  { color:#d97706; }
+    .risk-high { color:#dc2626; }
+
+    /* ── Feature matrix ── */
+    .check { color:#059669; font-weight:700; }
+    .cross  { color:#dc2626; }
+    .partial{ color:#d97706; }
+
+    /* ── Footer ── */
+    .doc-footer {
+      padding:24px 52px;
+      border-top:2px solid var(--border);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:0.75rem;
+      color:var(--ink3);
+    }
+
+    @media (max-width:640px) {
+      .inner { padding:28px 20px; }
+      .cover  { padding:36px 24px 32px; }
+      .grid-2,.grid-3,.stat-boxes { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<button class="print-fab no-print" onclick="window.print()">🖨️ Save as PDF</button>
+
+<div class="doc">
+
+  <!-- ══ COVER ══ -->
+  <div class="cover">
+    <div class="cover-top">
+      <span class="cover-logo">🚀 RetireRight</span>
+      <span class="cover-domain">FinTech · Gen Z</span>
+    </div>
+    <div class="cover-problem">Problem Statement — Retirement Blindness Among Gen Z</div>
+    <h1>Solving Retirement Blindness<br/>for Gen Z</h1>
+    <p class="cover-sub">
+      A gamified, AI-personalized retirement planning platform that makes long-term financial planning engaging, relatable, and immediately actionable for 18–28 year olds.
+    </p>
+    <div class="cover-meta">
+      <div class="meta-item">
+        <span class="meta-label">Domain</span>
+        <span class="meta-val">FinTech / WealthTech</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Target Users</span>
+        <span class="meta-val">Gen Z, Ages 18–28</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Solution Type</span>
+        <span class="meta-val">Web App (PWA-ready)</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Date</span>
+        <span class="meta-val">March 2026</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 1. PROBLEM STATEMENT ══ -->
+  <div class="inner">
+    <div class="section-num">Section 01</div>
+    <h2 class="section-title">Problem Statement</h2>
+    <p class="section-lead">
+      Gen Z faces a compounding crisis — retirement savings are critically low, and the gap between financial awareness and action is widening every year.
+    </p>
+
+    <div class="stat-boxes">
+      <div class="stat-box">
+        <span class="sv">&lt; 10%</span>
+        <span class="sl">of Gen Z actively contributes to any retirement instrument</span>
+      </div>
+      <div class="stat-box">
+        <span class="sv">5 yrs</span>
+        <span class="sl">average delay in starting retirement savings in India</span>
+      </div>
+      <div class="stat-box">
+        <span class="sv">40%</span>
+        <span class="sl">less corpus when retirement savings start 5 years late</span>
+      </div>
+    </div>
+
+    <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.75rem;color:var(--ink2);">Root Causes Identified</h3>
+    <div class="grid-2">
+      <div class="card">
+        <span class="pill pill-red">Psychological</span>
+        <h4 style="font-size:0.92rem;font-weight:700;margin-bottom:0.3rem;">Temporal Discounting</h4>
+        <p style="font-size:0.84rem;color:var(--ink2);">The human brain heavily discounts future rewards vs. immediate gratification. Retirement feels abstract, distant, and emotionally irrelevant at 22.</p>
+      </div>
+      <div class="card">
+        <span class="pill pill-amber">Awareness</span>
+        <h4 style="font-size:0.92rem;font-weight:700;margin-bottom:0.3rem;">Low Financial Literacy</h4>
+        <p style="font-size:0.84rem;color:var(--ink2);">Compound interest, SIPs, NPS, ELSS — the vocabulary alone creates a mental block. Schools teach calculus, not SIPs.</p>
+      </div>
+      <div class="card">
+        <span class="pill pill-slate">Behavioral</span>
+        <h4 style="font-size:0.92rem;font-weight:700;margin-bottom:0.3rem;">Lifestyle Inflation Priority</h4>
+        <p style="font-size:0.84rem;color:var(--ink2);">Food delivery, streaming, travel, gadgets — Gen Z allocates disposable income to lifestyle first, saving what's left (which is usually nothing).</p>
+      </div>
+      <div class="card">
+        <span class="pill pill-purple">Access</span>
+        <h4 style="font-size:0.92rem;font-weight:700;margin-bottom:0.3rem;">No Relatable Tools</h4>
+        <p style="font-size:0.84rem;color:var(--ink2);">Existing retirement calculators are dry, dull, and designed for 45-year-olds. Nothing speaks Gen Z's language of instant feedback, FOMO, and visual storytelling.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 2. SOLUTION OVERVIEW ══ -->
+  <div class="inner page-break">
+    <div class="section-num">Section 02</div>
+    <h2 class="section-title">Solution — RetireRight</h2>
+    <p class="section-lead">
+      RetireRight is a gamified retirement planning web app that makes saving feel like a game you win daily — not a sacrifice you make for 40 years.
+    </p>
+
+    <div class="card" style="margin-bottom:1.5rem;background:linear-gradient(135deg,#f5f3ff,#ecfeff);border-color:#c4b5fd;">
+      <strong style="font-family:'Outfit',sans-serif;">Core Thesis:</strong>
+      <span style="color:var(--ink2);"> Gen Z doesn't need more financial information. They need an experience that makes saving feel immediately rewarding, personally relatable, and socially cool.</span>
+    </div>
+
+    <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.75rem;">Seven Feature Pillars</h3>
+    <div class="grid-2" style="margin-bottom:0;">
+      <div class="card"><span class="pill pill-purple">Feature 1</span><br/><strong>🧮 Retirement Calculator</strong><br/><span style="font-size:0.84rem;color:var(--ink2);">Slider-driven compound interest engine. Real-time corpus updates. Compares "Start Now vs. Wait 5 Years."</span></div>
+      <div class="card"><span class="pill pill-cyan">Feature 2</span><br/><strong>🪞 Future Self Visualizer</strong><br/><span style="font-size:0.84rem;color:var(--ink2);">Side-by-side avatars — Smart Saver vs. Impulse Spender. Shows your lifestyle at retirement age, emotionally.</span></div>
+      <div class="card"><span class="pill pill-green">Feature 3</span><br/><strong>☕ Lifestyle Simulator</strong><br/><span style="font-size:0.84rem;color:var(--ink2);">Translates corpus into lifestyle units: #coffees, trips, iPhones, cars. Makes abstract wealth tangible.</span></div>
+      <div class="card"><span class="pill pill-amber">Feature 4</span><br/><strong>📊 Portfolio Allocator</strong><br/><span style="font-size:0.84rem;color:var(--ink2);">Drag sliders to split across equity, bonds, crypto, cash. Live donut chart + risk meter feedback.</span></div>
+      <div class="card"><span class="pill pill-red">Feature 5</span><br/><strong>🎮 Gamification Engine</strong><br/><span style="font-size:0.84rem;color:var(--ink2);">XP points, level system (7 levels), 8 unlockable badges, daily streak counter. Saved in localStorage.</span></div>
+      <div class="card"><span class="pill pill-slate">Feature 6</span><br/><strong>✅ Daily Habit Tracker</strong><br/><span style="font-size:0.84rem;color:var(--ink2);">5 daily financial habits. Check-in for XP. Tracks daily behavior and rewards instant actions.</span></div>
+    </div>
+    <div class="card" style="margin-top:1rem;"><span class="pill pill-purple">Feature 7</span><br/><strong>💡 Behavioral Nudge Engine</strong><br/><span style="font-size:0.84rem;color:var(--ink2);">Rotating real-time nudges in a sticky banner. 10 hyper-relevant nudges that reframe spending decisions in savings terms (e.g., "Skipping one ₹200 delivery = ₹2.4 Lakh in 20 years").</span></div>
+  </div>
+
+  <!-- ══ 3. NOVELTIES ══ -->
+  <div class="inner page-break">
+    <div class="section-num">Section 03</div>
+    <h2 class="section-title">Key Novelties &amp; Innovations</h2>
+    <p class="section-lead">
+      What makes RetireRight stand apart from existing solutions — the genuinely new ideas that address the Gen Z retirement problem.
+    </p>
+
+    <div class="novelty-card nc-purple" style="margin-bottom:1rem;">
+      <div class="n-number">01</div>
+      <span class="pill pill-purple">Core Innovation</span>
+      <h4>Future Self Avatar — Emotional Visualization Engine</h4>
+      <p>Instead of showing a number at age 60, RetireRight shows <em>you</em> at age 60 — with a rich lifestyle breakdown based on your savings path. Two side-by-side avatars (Smart Saver vs. Impulse Spender) trigger emotional resonance and identity-based motivation. Research shows that seeing a future self avatar increases retirement savings contribution rates by up to 30% (Hershfield et al., Stanford).</p>
+      <div class="impact"><span class="pill pill-purple" style="margin-bottom:0;">Impact</span> Bridges the psychological distance between "now" and "retirement" — the biggest barrier for Gen Z.</div>
+    </div>
+
+    <div class="novelty-card nc-cyan" style="margin-bottom:1rem;">
+      <div class="n-number">02</div>
+      <span class="pill pill-cyan">Novelty</span>
+      <h4>Lifestyle-Denominated Wealth Translation</h4>
+      <p>No app translates retirement wealth into lifestyle units the way RetireRight does. Your ₹3.5 Crore corpus becomes: "2,000 international trips, 388 iPhones, or 11 years of rent-free living." By expressing savings in the currency of Gen Z desires — experiences, devices, convenience — the simulator activates FOMO-driven motivation to save rather than spend.</p>
+      <div class="impact"><span class="pill pill-cyan" style="margin-bottom:0;">Impact</span> Makes compound interest emotionally compelling, not just mathematically correct.</div>
+    </div>
+
+    <div class="novelty-card nc-green" style="margin-bottom:1rem;">
+      <div class="n-number">03</div>
+      <span class="pill pill-green">Novelty</span>
+      <h4>Real-Time Behavioral Nudge System</h4>
+      <p>Dynamic, contextually framed nudges that reframe micro-spending decisions as long-term losses in real time. The nudge engine rotates 10+ messages triggered by time and user activity — e.g., closing a nudge triggers the next one. Unlike passive financial tips, these nudges use <em>loss-framing</em> psychology ("You lose ₹2.4 Lakh every time you skip this") — proven to be 2x more effective than gain-framing in behavioral economics.</p>
+      <div class="impact"><span class="pill pill-green" style="margin-bottom:0;">Impact</span> Creates persistent micro-behavioral change — the key to building savings habits at scale.</div>
+    </div>
+
+    <div class="novelty-card nc-amber" style="margin-bottom:1rem;">
+      <div class="n-number">04</div>
+      <span class="pill pill-amber">Novelty</span>
+      <h4>Gamified Financial Identity System</h4>
+      <p>A full XP + leveling system tied exclusively to financial behaviors — not arbitrary engagement metrics. Users earn XP for checking habits, running calculations, completing action steps, and learning. 7 levels (Savings Seedling → RetireRight Legend) and 8 badge categories build a <em>financial identity</em> — "I'm a FIRE Seeker" — rather than just using a calculator tool. This identity shift is the mechanism for long-term behavior change.</p>
+      <div class="impact"><span class="pill pill-amber" style="margin-bottom:0;">Impact</span> Transforms a one-time visit into a habit loop with daily return motivation.</div>
+    </div>
+
+    <div class="novelty-card nc-red" style="margin-bottom:1rem;">
+      <div class="n-number">05</div>
+      <span class="pill pill-red">Novelty</span>
+      <h4>"Cost of Delay" as the Primary Metric</h4>
+      <p>Most retirement tools show "what you'll have." RetireRight foregrounds "what you LOSE by waiting" — a dedicated "Cost of Waiting 5 Years" metric that updates dynamically with every slider change. This reframes the decision from a distant future benefit to an immediate, present loss — leveraging loss aversion (the strongest human financial motivator) to drive action.</p>
+      <div class="impact"><span class="pill pill-red" style="margin-bottom:0;">Impact</span> Loss aversion is 2x stronger than gain motivation — this is the right psychological lever.</div>
+    </div>
+
+    <div class="novelty-card nc-pink">
+      <div class="n-number">06</div>
+      <span class="pill" style="background:#fce7f3;color:#9d174d;">Novelty</span>
+      <h4>Daily Micro-Habit Tracker Tied to Financial Outcomes</h4>
+      <p>Rather than generic "complete your profile" tasks, RetireRight's habit checklist maps daily micro-behaviors (track expenses, skip an impulse buy, check your SIP) directly to XP outcomes and financial literacy. The streak counter leverages the "don't break the chain" commitment mechanism — the same psychology behind Duolingo's success — applied specifically to financial habit formation.</p>
+      <div class="impact"><span class="pill" style="background:#fce7f3;color:#9d174d;margin-bottom:0;">Impact</span> Converts abstract financial goals into daily 2-minute check-ins — the minimum viable habit.</div>
+    </div>
+  </div>
+
+  <!-- ══ 4. COMPETITIVE LANDSCAPE ══ -->
+  <div class="inner page-break">
+    <div class="section-num">Section 04</div>
+    <h2 class="section-title">Competitive Landscape</h2>
+    <p class="section-lead">How RetireRight compares to existing tools on features most critical to Gen Z engagement and behavior change.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>RetireRight</th>
+          <th>Groww / ETMoney</th>
+          <th>NPS Calculators</th>
+          <th>Generic Apps</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Future Self Avatar</td><td class="check">✓ Yes</td><td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td></tr>
+        <tr><td>Lifestyle simulator</td><td class="check">✓ Yes</td><td class="cross">✗</td><td class="cross">✗</td><td class="partial">△ Basic</td></tr>
+        <tr><td>Behavioral nudges</td><td class="check">✓ Rotating</td><td class="partial">△ Static</td><td class="cross">✗</td><td class="cross">✗</td></tr>
+        <tr><td>Gamification / XP</td><td class="check">✓ Full system</td><td class="partial">△ Points only</td><td class="cross">✗</td><td class="cross">✗</td></tr>
+        <tr><td>Daily habit tracker</td><td class="check">✓ Yes</td><td class="cross">✗</td><td class="cross">✗</td><td class="partial">△ Basic</td></tr>
+        <tr><td>"Cost of delay" metric</td><td class="check">✓ Dynamic</td><td class="cross">✗</td><td class="partial">△ Static</td><td class="cross">✗</td></tr>
+        <tr><td>Portfolio allocation UX</td><td class="check">✓ Interactive</td><td class="check">✓ Yes</td><td class="cross">✗</td><td class="cross">✗</td></tr>
+        <tr><td>Gen Z language/design</td><td class="check">✓ Native Gen Z</td><td class="partial">△ Moderate</td><td class="cross">✗</td><td class="cross">✗</td></tr>
+        <tr><td>No login required</td><td class="check">✓ Yes</td><td class="cross">✗</td><td class="check">✓ Yes</td><td class="check">✓ Yes</td></tr>
+        <tr><td>Education hub</td><td class="check">✓ Interactive</td><td class="partial">△ Articles</td><td class="cross">✗</td><td class="partial">△ Basic</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.75rem;color:var(--ink3);">✓ Full support &nbsp;·&nbsp; △ Partial &nbsp;·&nbsp; ✗ Not available</p>
+  </div>
+
+  <!-- ══ 5. IMPLEMENTATION PLAN ══ -->
+  <div class="inner page-break">
+    <div class="section-num">Section 05</div>
+    <h2 class="section-title">Implementation Plan</h2>
+    <p class="section-lead">
+      A phased, milestone-driven plan to design, build, and scale RetireRight from prototype to a production-grade platform.
+    </p>
+
+    <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem;">Technical Architecture</h3>
+    <div class="grid-3" style="margin-bottom:1.5rem;">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:1.6rem;margin-bottom:0.4rem;">🌐</div>
+        <strong style="font-size:0.88rem;">Frontend (MVP)</strong>
+        <p style="font-size:0.78rem;color:var(--ink3);margin-top:0.25rem;">HTML5 · Vanilla CSS · JavaScript · Chart.js · PWA-ready</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:1.6rem;margin-bottom:0.4rem;">⚡</div>
+        <strong style="font-size:0.88rem;">Frontend (V2)</strong>
+        <p style="font-size:0.78rem;color:var(--ink3);margin-top:0.25rem;">React / Next.js · TypeScript · Framer Motion · Recharts</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:1.6rem;margin-bottom:0.4rem;">🔧</div>
+        <strong style="font-size:0.88rem;">Backend (V2+)</strong>
+        <p style="font-size:0.78rem;color:var(--ink3);margin-top:0.25rem;">Node.js / FastAPI · PostgreSQL · Firebase Auth · Redis</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem;">Module-Level Implementation</h3>
+
+    <div class="impl-step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Retirement Calculator Engine</h4>
+        <p>Implement compound interest formula: FV = PMT × [(1+r)ⁿ−1]/r × (1+r), where r = monthly rate and n = months. Bind to interactive sliders for age, savings, return %, and retirement age. Compute "Cost of Delay" by comparing FV(years) vs FV(years−5).</p>
+        <div class="step-tags">
+          <span class="tag">Core Logic</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">Chart.js</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="impl-step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Future Self Visualization Module</h4>
+        <p>Render two avatar path cards (Saver / Spender) populated dynamically from calculator output. Auto-update retirement age badge, corpus figure, and lifestyle tier (Budget / Comfortable / Wealthy / FIRE) based on real-time calculation. Trigger identity-commitment prompt with XP reward for choosing "Smart Saver" path.</p>
+        <div class="step-tags">
+          <span class="tag">UI/UX</span>
+          <span class="tag">Psychology</span>
+          <span class="tag">Identity Design</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="impl-step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Lifestyle Simulation Engine</h4>
+        <p>Map corpus value across 8 lifestyle categories (travel, housing, food, tech, transport, health, education, recreation). Each card displays count = corpus / item_cost with appropriate units. Update in real time when calculator is re-run. Supports Indian rupee denomination with Crore/Lakh shorthand formatting.</p>
+        <div class="step-tags">
+          <span class="tag">Data Mapping</span>
+          <span class="tag">Behavioral Economics</span>
+          <span class="tag">Dynamic Rendering</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="impl-step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>Investment Allocation UI</h4>
+        <p>Four range sliders (Equity, Bonds, Crypto, Cash) control a Chart.js doughnut chart in real time. Risk meter computes weighted score (equity×0.7 + crypto×1.5) to classify: Conservative / Moderate / Aggressive / Very High Risk. Total validation flags red when allocation ≠ 100%.</p>
+        <div class="step-tags">
+          <span class="tag">Chart.js</span>
+          <span class="tag">Risk Scoring</span>
+          <span class="tag">Interactive Sliders</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="impl-step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h4>Gamification Engine</h4>
+        <p>XP state persisted in localStorage. 7 tiered levels from "Savings Seedling" to "RetireRight Legend" with XP thresholds. 8 badge categories triggered by XP milestones, streak days, calculation usage, habit completions, and level attainment. Level-up animations + toast notifications on badge unlock. Daily streak validated against stored date string.</p>
+        <div class="step-tags">
+          <span class="tag">localStorage</span>
+          <span class="tag">State Machine</span>
+          <span class="tag">Behavioral Design</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="impl-step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <h4>Daily Habit Tracker</h4>
+        <p>5 daily habits tied to specific financial behaviors. Date-gated completion — habits reset daily but XP is carried over. Completion is irreversible within the day to reinforce commitment. LocalStorage tracks today's completions. "All habits done" celebration toast on full completion. Each completion checks badge eligibility.</p>
+        <div class="step-tags">
+          <span class="tag">Daily Reset Logic</span>
+          <span class="tag">Commitment Devices</span>
+          <span class="tag">Behavior Tracking</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="impl-step">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <h4>Behavioral Nudge Engine</h4>
+        <p>10 pre-authored loss-framed nudges in a rotating sticky banner. Auto-rotates every 15 seconds. Dismissing a nudge advances to the next (never hides permanently). Nudges are authored using behavioral economics principles: loss-framing, social proof, anchoring, and FOMO triggers specific to Indian Gen Z spending patterns.</p>
+        <div class="step-tags">
+          <span class="tag">Loss Framing</span>
+          <span class="tag">Behavioral Economics</span>
+          <span class="tag">Auto-Rotation</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="impl-step">
+      <div class="step-num">8</div>
+      <div class="step-body">
+        <h4>Education Tips Carousel</h4>
+        <p>10 rich educational cards covering: Compound Interest, SIP, Index Funds, FIRE, Tax Efficiency, Diversification, Step-Up SIP, Emergency Fund, Lifestyle Inflation, and Time Value of Money. Auto-advances every 8 seconds. Keyboard arrow-key navigation. Dot indicators with active state. Each tip ends with an actionable "💡 Takeaway" line.</p>
+        <div class="step-tags">
+          <span class="tag">Financial Literacy</span>
+          <span class="tag">Carousel UX</span>
+          <span class="tag">Micro-Learning</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 6. ROADMAP ══ -->
+  <div class="inner page-break">
+    <div class="section-num">Section 06</div>
+    <h2 class="section-title">Development Roadmap</h2>
+    <p class="section-lead">Phased rollout from MVP prototype to full-scale platform, prioritizing user validation at each stage.</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-phase">Phase 1 · Weeks 1–2</div>
+        <h4>🧱 MVP — Core Calculator + Design System</h4>
+        <p>Build HTML/CSS/JS prototype with retirement calculator, compound interest chart, and premium dark-mode UI. Validate core engagement with test users. Deliverable: Shareable prototype URL.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">Phase 2 · Weeks 3–4</div>
+        <h4>🎮 Gamification + Habits Layer</h4>
+        <p>Implement full XP engine, badge system, daily habit tracker with localStorage persistence, and streak counter. Run A/B test: gamified vs. non-gamified UI on return visit rate.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">Phase 3 · Weeks 5–6</div>
+        <h4>🪞 Future Self + Lifestyle Simulator</h4>
+        <p>Launch future self avatar module and lifestyle simulator. Integrate user research feedback on which lifestyle categories resonate with Indian Gen Z. Add nudge rotation engine.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">Phase 4 · Weeks 7–10</div>
+        <h4>⚡ React Migration + Backend</h4>
+        <p>Migrate to Next.js. Add user accounts (Firebase Auth), cloud-synced progress, push notifications for daily habit reminders, and personalized nudge scheduling via ML scoring.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">Phase 5 · Weeks 11–16</div>
+        <h4>🤝 Broker API + Social Features</h4>
+        <p>Integrate Zerodha / Groww APIs for real SIP initiation from within the app. Add social leaderboards (opt-in), share-your-corpus card (viral loop), and referral-based XP rewards.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 7. RISK ANALYSIS ══ -->
+  <div class="inner">
+    <div class="section-num">Section 07</div>
+    <h2 class="section-title">Risk Analysis &amp; Mitigation</h2>
+    <p class="section-lead">Key risks across technical, regulatory, behavioral, and commercial dimensions — and how to address them.</p>
+
+    <table class="risk-row">
+      <thead>
+        <tr><th>Risk</th><th>Category</th><th>Likelihood</th><th>Mitigation Strategy</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Users disengage after first visit</td>
+          <td>Behavioral</td>
+          <td class="risk-high">High</td>
+          <td>Daily habit streak + push notifications + XP loss aversion for missing streaks</td>
+        </tr>
+        <tr>
+          <td>SEBI advisory compliance issues</td>
+          <td>Regulatory</td>
+          <td class="risk-med">Medium</td>
+          <td>Prominent "educational purposes only" disclaimer; no personalized investment advice</td>
+        </tr>
+        <tr>
+          <td>Incorrect financial calculations mislead users</td>
+          <td>Technical</td>
+          <td class="risk-low">Low</td>
+          <td>Unit tests on compound interest formula; peer review by CA/CFA; disclaimer copy</td>
+        </tr>
+        <tr>
+          <td>Gamification feels trivial / childish</td>
+          <td>UX</td>
+          <td class="risk-med">Medium</td>
+          <td>Premium visual design; meaningful level names; tie XP to real financial actions only</td>
+        </tr>
+        <tr>
+          <td>Market data for returns becomes outdated</td>
+          <td>Data</td>
+          <td class="risk-low">Low</td>
+          <td>User-editable return rate slider; note on 30-year historical average basis</td>
+        </tr>
+        <tr>
+          <td>Gen Z doesn't trust financial apps</td>
+          <td>Trust</td>
+          <td class="risk-med">Medium</td>
+          <td>No account required for core features; no financial data stored; open codebase</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ 8. SUMMARY ══ -->
+  <div class="inner" style="background:linear-gradient(135deg,#f5f3ff 0%,#ecfeff 100%);border-top:2px solid #c4b5fd;">
+    <div class="section-num">Section 08</div>
+    <h2 class="section-title">Summary &amp; Impact</h2>
+    <div class="grid-2" style="margin-bottom:0;">
+      <div>
+        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:0.75rem;">What RetireRight Uniquely Delivers</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:0.5rem;">
+          <li style="font-size:0.875rem;color:var(--ink2);">🪞 <strong>Emotional bridge</strong> between today's spending and tomorrow's lifestyle</li>
+          <li style="font-size:0.875rem;color:var(--ink2);">🎮 <strong>Habit loop architecture</strong> — daily returns, not one-time visits</li>
+          <li style="font-size:0.875rem;color:var(--ink2);">💡 <strong>Loss-framed nudges</strong> that work in the background of daily life</li>
+          <li style="font-size:0.875rem;color:var(--ink2);">📊 <strong>Relatable wealth translation</strong> in lifestyle units Gen Z actually values</li>
+          <li style="font-size:0.875rem;color:var(--ink2);">🆔 <strong>Financial identity building</strong> — not just a calculator, but a persona</li>
+          <li style="font-size:0.875rem;color:var(--ink2);">🚫 <strong>Zero friction</strong> — no login needed, works instantly on any device</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:0.75rem;">Measurable Success Metrics (Target)</h3>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          <div class="card" style="padding:0.65rem 0.9rem;margin-bottom:0;">
+            <strong style="font-size:0.85rem;">D7 Retention</strong>
+            <span style="font-size:0.78rem;color:var(--ink3);margin-left:0.5rem;">Target &gt; 25% (industry avg: 12%)</span>
+          </div>
+          <div class="card" style="padding:0.65rem 0.9rem;margin-bottom:0;">
+            <strong style="font-size:0.85rem;">Habit Completion Rate</strong>
+            <span style="font-size:0.78rem;color:var(--ink3);margin-left:0.5rem;">Target &gt; 40% of daily active users</span>
+          </div>
+          <div class="card" style="padding:0.65rem 0.9rem;margin-bottom:0;">
+            <strong style="font-size:0.85rem;">Calculator to SIP Conversion</strong>
+            <span style="font-size:0.78rem;color:var(--ink3);margin-left:0.5rem;">Target &gt; 8% via broker API link</span>
+          </div>
+          <div class="card" style="padding:0.65rem 0.9rem;margin-bottom:0;">
+            <strong style="font-size:0.85rem;">Avg. Session Time</strong>
+            <span style="font-size:0.78rem;color:var(--ink3);margin-left:0.5rem;">Target &gt; 4.5 minutes per visit</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FOOTER ══ -->
+  <div class="doc-footer">
+    <span><strong>RetireRight</strong> — Empowering Gen Z to Retire Early 🚀</span>
+    <span>For academic / hackathon purposes · March 2026</span>
+  </div>
+
+</div>
+
+</body>
+</html>

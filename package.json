@@ -1,0 +1,23 @@
+{
+  "name": "retireright",
+  "version": "1.0.0",
+  "private": true,
+  "description": "RetireRight — Gamified Retirement Planning for Gen Z (Full Stack)",
+  "type": "module",
+  "scripts": {
+    "install:all": "cd frontend && npm install && cd ../backend && npm install",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && node server.js",
+    "dev": "cd backend && npm run dev"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.3"
+  }
+}

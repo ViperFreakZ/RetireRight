@@ -1,0 +1,105 @@
+[
+  {
+    "id": "mnbdcs5z9euya4",
+    "username": "testuser",
+    "password": "$2a$10$ZHARjMu2O6W7zZ6AQsNqo.U97d94pAOX7ti2dYrJVH.4K.yvmtMq6",
+    "xp": 0,
+    "level": 0,
+    "streak": 0,
+    "badgesUnlocked": [],
+    "habitsCompleted": 0,
+    "calcUsed": 0,
+    "createdAt": "2026-03-29T06:19:23.159Z"
+  },
+  {
+    "id": "mnbddje43l3q3d",
+    "username": "dhanushkarthick",
+    "password": "$2a$10$y.5Bvax1ExrvsubN7smb6.wQ86O9tdczUPnyhQR4Ewc3T3L60maiC",
+    "xp": 0,
+    "level": 0,
+    "streak": 0,
+    "badgesUnlocked": [],
+    "habitsCompleted": 0,
+    "calcUsed": 0,
+    "createdAt": "2026-03-29T06:19:58.444Z"
+  },
+  {
+    "id": "mnbdes41lg4wem",
+    "username": "ballukutty",
+    "password": "$2a$10$nRXk/eZseD92Cf.J4ocL/O36UZVwS0xjqEDeH4O3yj/gPD8CLr/mG",
+    "xp": 25,
+    "level": 0,
+    "streak": 1,
+    "badgesUnlocked": [
+      "First Step"
+    ],
+    "habitsCompleted": 0,
+    "calcUsed": 0,
+    "createdAt": "2026-03-29T06:20:56.401Z"
+  },
+  {
+    "id": "mnbl3a6wqxinye",
+    "username": "viperfreakz",
+    "password": "$2a$10$UXkd6.M85OzrFnU6zFfC7upOAfJ/4rYGHfVC7vqP75NIcSIpo/r62",
+    "xp": 60,
+    "level": 0,
+    "streak": 1,
+    "badgesUnlocked": [
+      "First Step",
+      "Math Whiz"
+    ],
+    "habitsCompleted": 0,
+    "calcUsed": 4,
+    "createdAt": "2026-03-29T09:55:56.888Z"
+  },
+  {
+    "id": "mnbv10wycwwc4u",
+    "username": "welcome",
+    "password": "$2a$10$Zx/A42bNOdlUXg5zZPkDGuTH2KRamlhZRV5JuzEKA3HaFQghkG7Wa",
+    "xp": 670,
+    "level": 3,
+    "streak": 2,
+    "badgesUnlocked": [
+      "Math Whiz",
+      "First Step",
+      "Diamond Hands"
+    ],
+    "habitsCompleted": 0,
+    "calcUsed": 24,
+    "createdAt": "2026-03-29T14:34:07.714Z"
+  },
+  {
+    "id": "mnbvkcrspe8zof",
+    "username": "testuser_new",
+    "password": "$2a$10$cL1zFjpC3EtMwvVTXcyexe8aAJ70QSMQE9vMjjTeLDm0furVX6f3i",
+    "xp": 60,
+    "level": 0,
+    "streak": 2,
+    "badgesUnlocked": [
+      "Math Whiz",
+      "First Step"
+    ],
+    "habitsCompleted": 0,
+    "calcUsed": 8,
+    "createdAt": "2026-03-29T14:49:09.544Z"
+  },
+  {
+    "id": "mnbvy1dxwll4jh",
+    "username": "RetireRight",
+    "password": "$2a$10$hhbKIC0CJz3tmWIKJA4xKuHEpyOu5LzdSZOh5dizXSuF7X3Z0wUry",
+    "xp": 1070,
+    "level": 4,
+    "streak": 2,
+    "badgesUnlocked": [
+      "Math Whiz",
+      "First Step",
+      "Diamond Hands",
+      "FIRE Mode",
+      "Legend",
+      "Promise Keeper"
+    ],
+    "habitsCompleted": 0,
+    "calcUsed": 28,
+    "createdAt": "2026-03-29T14:59:47.973Z"
+  }
+]
